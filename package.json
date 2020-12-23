@@ -1,0 +1,25 @@
+{
+  "name": "glq-query-to-purs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "build-fe": "spago bundle-app -t dist/app.js",
+    "watch-fe": "spago bundle-app -t dist/app.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OxfordAbstracts/glq-query-to-purs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OxfordAbstracts/glq-query-to-purs/issues"
+  },
+  "homepage": "https://github.com/OxfordAbstracts/glq-query-to-purs#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

@@ -1,1 +1,0 @@
-# glq-query-to-purs
