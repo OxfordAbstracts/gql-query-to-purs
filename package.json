@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "heroku-postbuild": "npm run build-fe",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build-fe && node server.js",
+    "start": "node server.js",
     "dev": "nodemon server.js",
     "build-fe": "spago bundle-app -t dist/app.js",
     "watch-fe": "spago bundle-app -s -t dist/app.js --watch"
@@ -22,5 +23,10 @@
   "homepage": "https://github.com/OxfordAbstracts/glq-query-to-purs#readme",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "purescript": "^0.13.8",
+    "spago": "^0.18.1"
   }
 }
