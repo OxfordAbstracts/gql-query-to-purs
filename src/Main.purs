@@ -2,20 +2,25 @@ module Main where
 
 import Prelude
 
+import Data.Either (either)
+import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
+import Global.Unsafe (unsafeStringify)
+import GraphQL.Client.CodeGen.QueryFromGqlToPurs (queryFromGqlToPurs)
 import Halogen as H
 import Halogen.Aff as HA
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.VDom.Driver (runUI)
+import Text.Parsing.Parser (parseErrorMessage)
 
 main :: Effect Unit
 main = HA.runHalogenAff do
   body <- HA.awaitBody
   runUI component unit body
 
-data Action = Increment | Decrement
+data Action = GqlInput ( String)
 
 component :: forall t37 t38 t59 t62. H.Component HH.HTML t62 t59 t38 t37
 component =
@@ -25,16 +30,30 @@ component =
     , eval: H.mkEval $ H.defaultEval { handleAction = handleAction }
     }
   where
-  initialState _ = 0
+  initialState _ = 
+    { purs: ""
+    , error: Nothing
+    }
 
   render state =
     HH.div_
       [ HH.h1 [] [HH.text "gql to purs converter"]
-      , HH.button [ HE.onClick \_ -> Just Decrement ] [ HH.text "-" ]
-      , HH.div_ [ HH.text $ show state ]
-      , HH.button [ HE.onClick \_ -> Just Increment ] [ HH.text "+" ]
+      , HH.h2 [] [HH.text "Input"]
+      , HH.textarea 
+          [ HE.onValueInput (Just <<< GqlInput) ]
+      , HH.h2 [] [HH.text "Result"]
+      , HH.pre_ [ HH.text state.purs ]
+      , HH.h2 [] [HH.text "Parse error"]
+      , HH.pre_ [ HH.text $ foldMap parseErrorMessage state.error ]
       ]
 
   handleAction = case _ of
-    Increment -> H.modify_ \state -> state + 1
-    Decrement -> H.modify_ \state -> state - 1
+    GqlInput str -> 
+      H.modify_ \state ->
+        let 
+           pursE = queryFromGqlToPurs str 
+        in
+        state 
+          { purs = either (\_ -> state.purs) identity pursE
+          , error = either Just (\_ -> Nothing) pursE
+          }
