@@ -1,11 +1,13 @@
 module Main where
 
 import Prelude
+
 import Data.Either (Either(..), either)
 import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Effect (Effect)
+import GraphQL.Client.CodeGen.GetSymbols (symbolsToCode)
 import GraphQL.Client.CodeGen.QueryFromGqlToPurs (queryFromGqlToPurs)
 import GraphQL.Client.CodeGen.SchemaFromGqlToPurs (schemaFromGqlToPurs)
 import Halogen (liftEffect)
@@ -118,7 +120,7 @@ component =
           [ HH.h2 [] [ HH.text "Purescript schema" ]
           , codeBox state.pursSchema
           , HH.h2 [] [ HH.text "Purescript symbols" ]
-          , codeBox $ foldMap (_ <> "\n") state.symbols
+          , codeBox $ symbolsToCode "MySchema." state.symbols
           ]
         else
           [ HH.h2 [] [ HH.text "Purescript query" ]
