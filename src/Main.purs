@@ -110,7 +110,7 @@ component =
           [ HH.h2 [] [ HH.text "Query input" ]
           , textarea
               [ HE.onValueInput (Just <<< GqlQueryInput)
-              , HP.value state.pursQuery
+              , HP.value state.gqlQuery
               ]
           ]
 
