@@ -8,6 +8,7 @@ You can edit this file as you like.
   , "debug"
   , "effect"
   , "generics-rep"
+  , "graphql-client"
   , "graphql-parser"
   , "halogen"
   , "numbers"

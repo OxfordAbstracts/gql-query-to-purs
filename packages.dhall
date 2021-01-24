@@ -106,15 +106,42 @@ in  upstream
 -}
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20201222/packages.dhall sha256:620d0e4090cf1216b3bcbe7dd070b981a9f5578c38e810bbd71ece1794bfe13b
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20201223/packages.dhall sha256:a1a8b096175f841c4fef64c9b605fb0d691229241fd2233f6cf46e213de8a185
 
 in  upstream
+  with graphql-client =
+      { dependencies =
+          [ "aff"
+          , "aff-promise"
+          , "affjax"
+          , "argonaut-codecs"
+          , "argonaut-core"
+          , "console"
+          , "effect"
+          , "foreign-generic"
+          , "foreign-object"
+          , "graphql-parser"
+          , "heterogeneous"
+          , "parsing"
+          , "record"
+          , "spec"
+          , "strings"
+          , "strings-extra"
+          , "substitute"
+          , "typelevel"
+          , "variant"
+          ]
+      , repo =
+          "https://github.com/OxfordAbstracts/purescript-graphql-client.git"
+      , version =
+          "v1.7.3"
+      }
   with graphql-parser =
-    { dependencies =
-       [ "prelude"
-       ]
-    , repo =
-       "https://github.com/meeshkan/purescript-graphql-parser.git"
-    , version =
-        "v0.0.11"
-    }
+      { dependencies =
+          [ "prelude", "maybe"
+          ]
+      , repo =
+          "https://github.com/meeshkan/purescript-graphql-parser.git"
+      , version =
+          "v0.0.11"
+      }
