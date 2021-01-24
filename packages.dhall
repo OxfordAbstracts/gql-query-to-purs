@@ -145,3 +145,41 @@ in  upstream
       , version =
           "v0.0.11"
       }
+  with ocelot =
+    { dependencies =
+      [ "aff-promise"
+      , "affjax"
+      , "argonaut"
+      , "bigints"
+      , "console"
+      , "debug"
+      , "effect"
+      , "email-validate"
+      , "formatters"
+      , "fuzzy"
+      , "halogen"
+      , "halogen-renderless"
+      , "halogen-select"
+      , "halogen-storybook"
+      , "html-parser-halogen"
+      , "js-timers"
+      , "numbers"
+      , "psci-support"
+      , "read"
+      , "remotedata"
+      , "svg-parser"
+      , "svg-parser-halogen"
+      , "test-unit"
+      , "variant"
+      ]
+    , repo =
+      "https://github.com/citizennet/purescript-ocelot"
+    , version =
+      "v0.25.1"
+    }
+  with halogen-renderless = 
+    { dependencies = [ "prelude", "control" ]
+    , repo =
+        "https://github.com/purescript-deprecated/purescript-halogen-renderless"
+    , version = "v0.0.4"
+    }

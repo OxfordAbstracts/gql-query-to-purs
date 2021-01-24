@@ -12,42 +12,65 @@ import Halogen.Aff as HA
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.VDom.Driver (runUI)
+import Ocelot.Block.Input (textarea)
+import Ocelot.Block.NavigationTab (navigationTabs_)
 import Text.Parsing.Parser (parseErrorMessage)
 
 main :: Effect Unit
 main = HA.runHalogenAff do
   body <- HA.awaitBody
-  runUI app unit body
+  runUI component PSchema body
 
-data Action = GqlQueryInput String
+data Action = GqlInput String
 
-app :: forall t37 t38 t59 t62. H.Component HH.HTML t62 t59 t38 t37
-app =
+data Page = PSchema | PQuery
+
+derive instance eqPage :: Eq Page
+
+component :: forall m o q. H.Component HH.HTML q Page o m
+component =
   H.mkComponent
     { initialState
     , render
     , eval: H.mkEval $ H.defaultEval { handleAction = handleAction }
     }
   where
-  initialState _ = 
+  initialState page = 
     { purs: ""
     , error: Nothing
+    , page
     }
 
   render state =
     HH.div_
-      [ HH.h1 [] [HH.text "gql to purs converter"]
-      , HH.h2 [] [HH.text "Input"]
-      , HH.textarea 
-          [ HE.onValueInput (Just <<< GqlQueryInput) ]
-      , HH.h2 [] [HH.text "Result"]
+      [ navigationTabs_ 
+        { tabs: 
+          [   { name: "Schema"
+              , link: "schema"
+              , page: PSchema
+              , errors: 0
+              }
+          ,   { name: "Query"
+              , link: "query"
+              , page: PQuery
+              , errors: 0
+              }
+          ]
+        , activePage:  state.page
+        }
+
+      , HH.h1 [] [HH.text "gql to purs converter"]
+      , HH.h2 [] [HH.text "Query input"]
+      , textarea
+          [ HE.onValueInput (Just <<< GqlInput) ]
+      , HH.h2 [] [HH.text "Query as Gql"]
       , HH.pre_ [ HH.text state.purs ]
       , HH.h2 [] [HH.text "Parse error"]
       , HH.pre_ [ HH.text $ foldMap parseErrorMessage state.error ]
       ]
 
   handleAction = case _ of
-    GqlQueryInput str -> 
+    GqlInput str -> 
       H.modify_ \state ->
         let 
            pursE = queryFromGqlToPurs str 

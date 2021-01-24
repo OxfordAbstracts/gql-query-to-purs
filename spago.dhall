@@ -12,8 +12,10 @@ You can edit this file as you like.
   , "graphql-parser"
   , "halogen"
   , "numbers"
+  , "ocelot"
   , "parsing"
   , "psci-support"
+  , "routing-duplex"
   , "strings-extra"
   ]
 , packages = ./packages.dhall
