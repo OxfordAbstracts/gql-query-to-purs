@@ -109,7 +109,7 @@ component =
               [ HP.checked state.useNewtypesForRecords
               , HE.onChecked \_ -> Just ToggleUseNewtypesForRecords
               ]
-              [ HH.text "Use newtypes for records to allow recursive/cirular schemas " ]
+              [ HH.text "Use newtypes for records to allow recursive/circular schemas " ]
           , textarea
               [ HE.onValueInput (Just <<< GqlSchemaInput)
               , HP.value state.gqlSchema
