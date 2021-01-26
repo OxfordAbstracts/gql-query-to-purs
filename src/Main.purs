@@ -1,7 +1,6 @@
 module Main where
 
 import Prelude
-
 import Data.Either (Either(..), either)
 import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
@@ -68,7 +67,8 @@ component =
       }
 
   render state =
-    HH.div_
+    HH.div
+      [ HP.classes [ HH.ClassName "m-4" ] ]
       [ navigationTabs_
           { tabs:
               [ { name: "Schema"
@@ -96,7 +96,7 @@ component =
 
     content =
       HH.div
-        [ HP.classes [ HH.ClassName "flex", HH.ClassName "flex-1", HH.ClassName "m-1" ] ]
+        [ HP.classes [ HH.ClassName "flex", HH.ClassName "flex-1", HH.ClassName "m-4" ] ]
         [ contentLeft
         , contentRight
         ]
@@ -109,7 +109,7 @@ component =
               [ HP.checked state.useNewtypesForRecords
               , HE.onChecked \_ -> Just ToggleUseNewtypesForRecords
               ]
-              [ HH.text "Use newtypes for records to allow recursive/cirular schemas "]
+              [ HH.text "Use newtypes for records to allow recursive/cirular schemas " ]
           , textarea
               [ HE.onValueInput (Just <<< GqlSchemaInput)
               , HP.value state.gqlSchema
@@ -163,7 +163,7 @@ component =
           , dir: mempty
           , modulePath: mempty
           , isHasura: false
-          , useNewtypesForRecords: false
+          , useNewtypesForRecords: st.useNewtypesForRecords
           , cache: Nothing
           }
           { schema, moduleName }
@@ -180,7 +180,7 @@ component =
             }
 
 moduleName :: String
-moduleName = "MyModule" 
+moduleName = "MyModule"
 
 codeBox :: forall t2 t3. String -> HH.HTML t3 t2
 codeBox txt =
