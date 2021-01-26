@@ -127,14 +127,13 @@ in  upstream
           , "spec"
           , "strings"
           , "strings-extra"
-          , "substitute"
           , "typelevel"
           , "variant"
           ]
       , repo =
           "https://github.com/OxfordAbstracts/purescript-graphql-client.git"
       , version =
-          "v1.7.3"
+          "v1.7.17"
       }
   with graphql-parser =
       { dependencies =
