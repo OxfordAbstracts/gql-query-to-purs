@@ -7,10 +7,10 @@ import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Effect (Effect)
-import GraphQL.Client.CodeGen.Template.Enum as Enum
 import GraphQL.Client.CodeGen.GetSymbols (symbolsToCode)
 import GraphQL.Client.CodeGen.Query (queryFromGqlToPurs)
 import GraphQL.Client.CodeGen.Schema (schemaFromGqlToPurs)
+import GraphQL.Client.CodeGen.Template.Enum as Enum
 import Halogen (liftEffect)
 import Halogen as H
 import Halogen.Aff as HA
@@ -96,7 +96,7 @@ component =
 
     content =
       HH.div
-        [ HP.classes [ HH.ClassName "flex", HH.ClassName "flex-1" ] ]
+        [ HP.classes [ HH.ClassName "flex", HH.ClassName "flex-1", HH.ClassName "m-1" ] ]
         [ contentLeft
         , contentRight
         ]
