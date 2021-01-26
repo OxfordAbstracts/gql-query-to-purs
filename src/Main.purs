@@ -10,6 +10,7 @@ import GraphQL.Client.CodeGen.GetSymbols (symbolsToCode)
 import GraphQL.Client.CodeGen.Query (queryFromGqlToPurs)
 import GraphQL.Client.CodeGen.Schema (schemaFromGqlToPurs)
 import GraphQL.Client.CodeGen.Template.Enum as Enum
+import GraphQL.Client.CodeGen.Template.Schema as Schema
 import Halogen (liftEffect)
 import Halogen as H
 import Halogen.Aff as HA
@@ -172,7 +173,13 @@ component =
         Left error -> st { error = Just error, gqlSchema = schema }
         Right { enums, mainSchemaCode, symbols } ->
           st
-            { pursSchema = mainSchemaCode
+            { pursSchema =
+              Schema.template
+                { enums: map _.name enums
+                , mainSchemaCode
+                , modulePrefix: ""
+                , name: moduleName
+                }
             , gqlSchema = schema
             , enums = enums
             , symbols = symbols
