@@ -129,11 +129,12 @@ in  upstream
           , "strings-extra"
           , "typelevel"
           , "variant"
+          , "event"
           ]
       , repo =
           "https://github.com/OxfordAbstracts/purescript-graphql-client.git"
       , version =
-          "v1.7.17"
+          "v2.3.0"
       }
   with graphql-parser =
       { dependencies =

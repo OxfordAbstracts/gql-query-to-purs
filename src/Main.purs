@@ -1,13 +1,13 @@
 module Main where
 
 import Prelude
+
 import Data.Either (Either(..), either)
 import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Effect (Effect)
 import GraphQL.Client.CodeGen.GetSymbols (symbolsToCode)
-import GraphQL.Client.CodeGen.Query (queryFromGqlToPurs)
 import GraphQL.Client.CodeGen.Schema (schemaFromGqlToPurs)
 import GraphQL.Client.CodeGen.Template.Enum as Enum
 import GraphQL.Client.CodeGen.Template.Schema as Schema
@@ -21,6 +21,8 @@ import Halogen.VDom.Driver (runUI)
 import Ocelot.Block.Checkbox (checkbox_)
 import Ocelot.Block.Input (textarea)
 import Ocelot.Block.NavigationTab (navigationTabs_)
+import QueryGen (queryFromGqlToPurs)
+import Record as Record
 import Text.Parsing.Parser (parseErrorMessage)
 import Web.HTML (window)
 import Web.HTML.Location (pathname)
@@ -39,6 +41,7 @@ data Action
   = GqlQueryInput String
   | GqlSchemaInput String
   | ToggleUseNewtypesForRecords
+  | ToggleUseQuerySymbolPuns
 
 data Page
   = PSchema
@@ -65,6 +68,7 @@ component =
       , error: Nothing
       , page
       , useNewtypesForRecords: false
+      , useQuerySymbolPuns: true
       }
 
   render state =
@@ -105,7 +109,7 @@ component =
     contentLeft =
       HH.div_
         if state.page == PSchema then
-          [ HH.h2 [] [ HH.text "Schema input" ]
+          [ HH.h2 [] [ HH.text "Graphql schema" ]
           , checkbox_
               [ HP.checked state.useNewtypesForRecords
               , HE.onChecked \_ -> Just ToggleUseNewtypesForRecords
@@ -113,13 +117,20 @@ component =
               [ HH.text "Use newtypes for records to allow recursive/circular schemas " ]
           , textarea
               [ HE.onValueInput (Just <<< GqlSchemaInput)
+              , HP.cols 80
               , HP.value state.gqlSchema
               ]
           ]
         else
-          [ HH.h2 [] [ HH.text "Query input" ]
+          [ HH.h2 [] [ HH.text "GraphQL query" ]
+          , checkbox_
+              [ HP.checked state.useQuerySymbolPuns
+              , HE.onChecked \_ -> Just ToggleUseQuerySymbolPuns
+              ]
+              [ HH.text "Use symbol puns for fields" ]
           , textarea
               [ HE.onValueInput (Just <<< GqlQueryInput)
+              , HP.cols 80
               , HP.value state.gqlQuery
               ]
           ]
@@ -143,17 +154,26 @@ component =
 
   handleAction = case _ of
     GqlQueryInput str ->
-      H.modify_ \state ->
+      H.modify_ \state@{useQuerySymbolPuns} ->
         let
-          pursE = queryFromGqlToPurs str
+          pursE = queryFromGqlToPurs { useQuerySymbolPuns } str
         in
           state
             { pursQuery = either (\_ -> state.pursQuery) identity pursE
             , gqlQuery = str
             , error = either Just (\_ -> Nothing) pursE
             }
-    GqlSchemaInput gql -> H.modify_ (updateStateWithPursSchema gql)
-    ToggleUseNewtypesForRecords -> H.modify_ \st -> st { useNewtypesForRecords = not st.useNewtypesForRecords }
+            
+    GqlSchemaInput gql -> 
+      H.modify_ (updateStateWithPursSchema gql)
+
+    ToggleUseNewtypesForRecords -> do
+      st <- H.modify \st -> st { useNewtypesForRecords = not st.useNewtypesForRecords }
+      handleAction $ GqlSchemaInput st.gqlSchema
+
+    ToggleUseQuerySymbolPuns -> do
+      st <- H.modify \st -> st { useQuerySymbolPuns = not st.useQuerySymbolPuns }
+      handleAction $ GqlQueryInput st.gqlQuery
 
   updateStateWithPursSchema schema st =
     let
@@ -166,6 +186,8 @@ component =
           , isHasura: false
           , useNewtypesForRecords: st.useNewtypesForRecords
           , cache: Nothing
+          , enumImports: [] 
+          , customEnumCode: const ""
           }
           { schema, moduleName }
     in
@@ -181,7 +203,7 @@ component =
                 , name: moduleName
                 }
             , gqlSchema = schema
-            , enums = enums
+            , enums = map (Record.merge { customCode: const "", imports: [] }) enums
             , symbols = symbols
             , error = Nothing
             }
