@@ -130,6 +130,7 @@ component =
               [ HH.text "Use symbol puns for fields" ]
           , textarea
               [ HE.onValueInput (Just <<< GqlQueryInput)
+              , HP.placeholder "Paste your graphql query here"
               , HP.cols 80
               , HP.value state.gqlQuery
               ]
